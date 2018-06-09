@@ -15,12 +15,15 @@
 <meta property="og:site_name" content="Huoyanqilin">
 <meta property="og:description" content="背景Viewstamps算法是Oki和Liskov于1988年发表的论文，Liskov是一位计算机世界中杰出的女性，08年图灵奖得主、著名面向 对象五原则中“Liskov可替换原则”的提出者。目前无法考证Viewstamps是否是第一个多数派表决的算法，跟 Paxos（1989）几乎同年。而随着06年googlechubby论文发表，Paxos迅速闻名于世，而Viewstamps依旧籍籍无名。 前">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:image" content="http://yoursite.com/Users/feifei/Blog/Blog/source/_posts/vr1.png">
-<meta property="og:updated_time" content="2018-06-09T03:02:41.948Z">
+<meta property="og:image" content="http://yoursite.com/2018/05/20/images/vr1.png">
+<meta property="og:image" content="http://yoursite.com/2018/05/20/images/vr2.png">
+<meta property="og:image" content="http://yoursite.com/2018/05/20/images/vr3.png">
+<meta property="og:image" content="http://yoursite.com/2018/05/20/images/vr4.png">
+<meta property="og:updated_time" content="2018-06-09T03:19:56.198Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Viewstamp Replication">
 <meta name="twitter:description" content="背景Viewstamps算法是Oki和Liskov于1988年发表的论文，Liskov是一位计算机世界中杰出的女性，08年图灵奖得主、著名面向 对象五原则中“Liskov可替换原则”的提出者。目前无法考证Viewstamps是否是第一个多数派表决的算法，跟 Paxos（1989）几乎同年。而随着06年googlechubby论文发表，Paxos迅速闻名于世，而Viewstamps依旧籍籍无名。 前">
-<meta name="twitter:image" content="http://yoursite.com/Users/feifei/Blog/Blog/source/_posts/vr1.png">
+<meta name="twitter:image" content="http://yoursite.com/2018/05/20/images/vr1.png">
   
     <link rel="alternative" href="/atom.xml" title="Huoyanqilin" type="application/atom+xml">
   
@@ -169,7 +172,7 @@
         <h3 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h3><p>Viewstamps算法是Oki和Liskov于1988年发表的论文，Liskov是一位计算机世界中杰出的女性，08年图灵奖得主、著名面向 对象五原则中“Liskov可替换原则”的提出者。目前无法考证Viewstamps是否是第一个多数派表决的算法，跟 Paxos（1989）几乎同年。而随着06年googlechubby论文发表，Paxos迅速闻名于世，而Viewstamps依旧籍籍无名。</p>
 <h3 id="前提"><a href="#前提" class="headerlink" title="前提"></a>前提</h3><p>1。 VR的错误模型是fail-stop。<br>2。异步网络：允许消息丢失、重传、延迟、乱序。<br>3。非拜占庭</p>
 <p>复制组：2f+1的副本情况下，允许f个副本失败。</p>
-<h3 id="架构"><a href="#架构" class="headerlink" title="架构"></a>架构</h3><p><img src="/Users/feifei/Blog/Blog/source/_posts/vr1.png" alt="架构"></p>
+<h3 id="架构"><a href="#架构" class="headerlink" title="架构"></a>架构</h3><p><img src="../images/vr1.png" alt=""></p>
 <h3 id="概览"><a href="#概览" class="headerlink" title="概览"></a>概览</h3><p>RSM（Replicated State Machine）要求所有的副本有一个相同的初始状态，并且所有的操作执行顺序是固定的，可以认为，如果所有副本执行了相同顺序的操作，那么所有副本的最终状态也是一致的。所以如何去保证即使在有异常的情况下，所有副本仍然执行相同顺序的操作？<br>1。VR使用主副本（primary replica）去给客户端请求定序，其他的从副本（backup replica）从主副本接受请求，并顺序执行。使用主副本可以很容易的为请求定序，但是主副本宕机又该如何处理？VR的解决方法是定义了Views的概念，每一个View里都会选一个主副本出来（类似paxos的epoch，raft的term）。<br>2。从副本挂了后，如何恢复？VR定义了一套恢复协议。这里跟paxos、raft不同的是，VR不要求将副本记录自己的状态，即不需要持久化日志。</p>
 <h3 id="VR协议"><a href="#VR协议" class="headerlink" title="VR协议"></a>VR协议</h3><p>1- 正常流程<br>2- view change（leader election）<br>3- 恢复协议</p>
 <h4 id="状态定义"><a href="#状态定义" class="headerlink" title="状态定义"></a>状态定义</h4><ul>
@@ -182,9 +185,9 @@
 <li>The commit-number is the op-number of the most recently committed operation.</li>
 <li>The client-table. This records for each client the number of its most recent request, plus, if the request has been executed, the result sent for that request.<br>值得注意的是，客户端也是要持有状态的，需要记录configuration、view number和当前的请求序号，并且该客户端的后一个请求要比前一个请求的序号大，目的是为了最多执行一次请求。</li>
 </ul>
-<h4 id="Normal-Case"><a href="#Normal-Case" class="headerlink" title="Normal Case"></a>Normal Case</h4><p>假设所有副本都处于normal状态（只有normal状态才能处理客户端请求），且在同一个veiw中。</p>
+<h4 id="Normal-Case"><a href="#Normal-Case" class="headerlink" title="Normal Case"></a>Normal Case</h4><p>假设所有副本都处于normal状态（只有normal状态才能处理客户端请求），且在同一个veiw中。<br><img src="../images/vr2.png" alt=""><br><img src="../images/vr3.png" alt=""></p>
 <p>op表示客户端要执行的操作，c表示client-id，s表示request-number，v表示view-number，n表示operation-number，k表示commit-number，m表示从客户端接受的message，i表示副本的序号，x表示执行结果。</p>
-<h4 id="View-Change"><a href="#View-Change" class="headerlink" title="View Change"></a>View Change</h4><p>发生view change表示primary宕机或者被分区了。</p>
+<h4 id="View-Change"><a href="#View-Change" class="headerlink" title="View Change"></a>View Change</h4><p>发生view change表示primary宕机或者被分区了。<br><img src="../images/vr4.png" alt=""></p>
 <p>这里，view change的时候，backup并不是推选自己去当选primary，而是选择一个除了old primary外，序号最小的backup去做primary，并且序号最小的backup收到f+1个DoViewChange后，就认为自己为primary了。如果推选新的primary失败，副本会继续一个新的view change，再推选一个最小序号的backup作为primary。</p>
 <h4 id="Recovery"><a href="#Recovery" class="headerlink" title="Recovery"></a>Recovery</h4><p>当一个replica fail-recovery后，它需要恢复到足够新的log，才能够处理请求。这里注意的是，因为VR协议是不要求任何信息记录到磁盘的，所以如果宕机后，该replica是会丢失所有数据的，所以需要从其他replica上恢复。当replica恢复后，需要置自己的状态为recovering，并开始执行recovery protocol。<br>1- recovering replica发送<recovery i,="" x="">消息给所有的其他副本， x是当前时间。<br>2- 一个replica j只有是normal状态时，才回复Recovery消息<recoveryresponse v,="" x,="" l,="" n,="" k,="" j="">。v是当前view number，如果j是primary，则l是log，n是op-number，k是commit-number，如果不是的话，这些字段都为null。<br>3- recovering replica等接受到f+1个RecoveryResponse后，包括primary，则开始恢复自己的状态，恢复完后更改自己的状态为normal。</recoveryresponse></recovery></p>
 <p>如果集群正在进行view change，而recovering replica又是新primary的话，view change最终会失败。</p>
