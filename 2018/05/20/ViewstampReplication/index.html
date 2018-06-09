@@ -6,19 +6,21 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>ViewstampReplication | Huoyanqilin</title>
+  <title>Viewstamp Replication | Huoyanqilin</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="Viewstamps算法是Oki和Liskov于1988年发表的论文，Liskov是一位计算机世界中杰出的女性，08年图灵奖得主、著名面向 对象五原则中“Liskov可替换原则”的提出者。目前无法考证Viewstamps是否是第一个多数派表决的算法，跟 Paxos（1989）几乎同年。而随着06年googlechubby论文发表，Paxos迅速闻名于世，而Viewstamps依旧籍籍无名。 前提1">
+  <meta name="description" content="背景Viewstamps算法是Oki和Liskov于1988年发表的论文，Liskov是一位计算机世界中杰出的女性，08年图灵奖得主、著名面向 对象五原则中“Liskov可替换原则”的提出者。目前无法考证Viewstamps是否是第一个多数派表决的算法，跟 Paxos（1989）几乎同年。而随着06年googlechubby论文发表，Paxos迅速闻名于世，而Viewstamps依旧籍籍无名。 前">
 <meta property="og:type" content="article">
-<meta property="og:title" content="ViewstampReplication">
+<meta property="og:title" content="Viewstamp Replication">
 <meta property="og:url" content="http://yoursite.com/2018/05/20/ViewstampReplication/index.html">
 <meta property="og:site_name" content="Huoyanqilin">
-<meta property="og:description" content="Viewstamps算法是Oki和Liskov于1988年发表的论文，Liskov是一位计算机世界中杰出的女性，08年图灵奖得主、著名面向 对象五原则中“Liskov可替换原则”的提出者。目前无法考证Viewstamps是否是第一个多数派表决的算法，跟 Paxos（1989）几乎同年。而随着06年googlechubby论文发表，Paxos迅速闻名于世，而Viewstamps依旧籍籍无名。 前提1">
+<meta property="og:description" content="背景Viewstamps算法是Oki和Liskov于1988年发表的论文，Liskov是一位计算机世界中杰出的女性，08年图灵奖得主、著名面向 对象五原则中“Liskov可替换原则”的提出者。目前无法考证Viewstamps是否是第一个多数派表决的算法，跟 Paxos（1989）几乎同年。而随着06年googlechubby论文发表，Paxos迅速闻名于世，而Viewstamps依旧籍籍无名。 前">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2018-05-20T13:14:42.321Z">
+<meta property="og:image" content="http://yoursite.com/Users/feifei/Blog/Blog/source/_posts/vr1.png">
+<meta property="og:updated_time" content="2018-06-09T03:02:41.948Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="ViewstampReplication">
-<meta name="twitter:description" content="Viewstamps算法是Oki和Liskov于1988年发表的论文，Liskov是一位计算机世界中杰出的女性，08年图灵奖得主、著名面向 对象五原则中“Liskov可替换原则”的提出者。目前无法考证Viewstamps是否是第一个多数派表决的算法，跟 Paxos（1989）几乎同年。而随着06年googlechubby论文发表，Paxos迅速闻名于世，而Viewstamps依旧籍籍无名。 前提1">
+<meta name="twitter:title" content="Viewstamp Replication">
+<meta name="twitter:description" content="背景Viewstamps算法是Oki和Liskov于1988年发表的论文，Liskov是一位计算机世界中杰出的女性，08年图灵奖得主、著名面向 对象五原则中“Liskov可替换原则”的提出者。目前无法考证Viewstamps是否是第一个多数派表决的算法，跟 Paxos（1989）几乎同年。而随着06年googlechubby论文发表，Paxos迅速闻名于世，而Viewstamps依旧籍籍无名。 前">
+<meta name="twitter:image" content="http://yoursite.com/Users/feifei/Blog/Blog/source/_posts/vr1.png">
   
     <link rel="alternative" href="/atom.xml" title="Huoyanqilin" type="application/atom+xml">
   
@@ -151,7 +153,7 @@
         
   
     <h1 class="article-title" itemprop="name">
-      ViewstampReplication
+      Viewstamp Replication
     </h1>
   
 
@@ -164,13 +166,13 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>Viewstamps算法是Oki和Liskov于1988年发表的论文，Liskov是一位计算机世界中杰出的女性，08年图灵奖得主、著名面向 对象五原则中“Liskov可替换原则”的提出者。目前无法考证Viewstamps是否是第一个多数派表决的算法，跟 Paxos（1989）几乎同年。而随着06年googlechubby论文发表，Paxos迅速闻名于世，而Viewstamps依旧籍籍无名。</p>
-<p>前提<br>1。 VR的错误模型是fail-stop。<br>2。异步网络：允许消息丢失、重传、延迟、乱序。<br>3。非拜占庭</p>
-<p>复制组：2f+1的副本情况下，允许f个副本失败。<br>架构：</p>
-<p>概览：<br>RSM（Replicated State Machine）要求所有的副本有一个相同的初始状态，并且所有的操作执行顺序是固定的，可以认为，如果所有副本执行了相同顺序的操作，那么所有副本的最终状态也是一致的。所以如何去保证即使在有异常的情况下，所有副本仍然执行相同顺序的操作？<br>1。VR使用主副本（primary replica）去给客户端请求定序，其他的从副本（backup replica）从主副本接受请求，并顺序执行。使用主副本可以很容易的为请求定序，但是主副本宕机又该如何处理？VR的解决方法是定义了Views的概念，每一个View里都会选一个主副本出来（类似paxos的epoch，raft的term）。<br>2。从副本挂了后，如何恢复？VR定义了一套恢复协议。这里跟paxos、raft不同的是，VR不要求将副本记录自己的状态，即不需要持久化日志。</p>
-<p>VR协议<br>1- 正常流程<br>2- view change（leader election）<br>3- 恢复协议</p>
-<p>状态定义：</p>
-<ul>
+        <h3 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h3><p>Viewstamps算法是Oki和Liskov于1988年发表的论文，Liskov是一位计算机世界中杰出的女性，08年图灵奖得主、著名面向 对象五原则中“Liskov可替换原则”的提出者。目前无法考证Viewstamps是否是第一个多数派表决的算法，跟 Paxos（1989）几乎同年。而随着06年googlechubby论文发表，Paxos迅速闻名于世，而Viewstamps依旧籍籍无名。</p>
+<h3 id="前提"><a href="#前提" class="headerlink" title="前提"></a>前提</h3><p>1。 VR的错误模型是fail-stop。<br>2。异步网络：允许消息丢失、重传、延迟、乱序。<br>3。非拜占庭</p>
+<p>复制组：2f+1的副本情况下，允许f个副本失败。</p>
+<h3 id="架构"><a href="#架构" class="headerlink" title="架构"></a>架构</h3><p><img src="/Users/feifei/Blog/Blog/source/_posts/vr1.png" alt="架构"></p>
+<h3 id="概览"><a href="#概览" class="headerlink" title="概览"></a>概览</h3><p>RSM（Replicated State Machine）要求所有的副本有一个相同的初始状态，并且所有的操作执行顺序是固定的，可以认为，如果所有副本执行了相同顺序的操作，那么所有副本的最终状态也是一致的。所以如何去保证即使在有异常的情况下，所有副本仍然执行相同顺序的操作？<br>1。VR使用主副本（primary replica）去给客户端请求定序，其他的从副本（backup replica）从主副本接受请求，并顺序执行。使用主副本可以很容易的为请求定序，但是主副本宕机又该如何处理？VR的解决方法是定义了Views的概念，每一个View里都会选一个主副本出来（类似paxos的epoch，raft的term）。<br>2。从副本挂了后，如何恢复？VR定义了一套恢复协议。这里跟paxos、raft不同的是，VR不要求将副本记录自己的状态，即不需要持久化日志。</p>
+<h3 id="VR协议"><a href="#VR协议" class="headerlink" title="VR协议"></a>VR协议</h3><p>1- 正常流程<br>2- view change（leader election）<br>3- 恢复协议</p>
+<h4 id="状态定义"><a href="#状态定义" class="headerlink" title="状态定义"></a>状态定义</h4><ul>
 <li>The configuration. This is a sorted array containing the IP addresses of each of the 2f + 1 replicas.</li>
 <li>The replica number. This is the index into the configuration where this replica’s IP address is stored.</li>
 <li>The current view-number, initially 0.</li>
@@ -180,25 +182,26 @@
 <li>The commit-number is the op-number of the most recently committed operation.</li>
 <li>The client-table. This records for each client the number of its most recent request, plus, if the request has been executed, the result sent for that request.<br>值得注意的是，客户端也是要持有状态的，需要记录configuration、view number和当前的请求序号，并且该客户端的后一个请求要比前一个请求的序号大，目的是为了最多执行一次请求。</li>
 </ul>
-<p>normal case<br>假设所有副本都处于normal状态（只有normal状态才能处理客户端请求），且在同一个veiw中。</p>
+<h4 id="Normal-Case"><a href="#Normal-Case" class="headerlink" title="Normal Case"></a>Normal Case</h4><p>假设所有副本都处于normal状态（只有normal状态才能处理客户端请求），且在同一个veiw中。</p>
 <p>op表示客户端要执行的操作，c表示client-id，s表示request-number，v表示view-number，n表示operation-number，k表示commit-number，m表示从客户端接受的message，i表示副本的序号，x表示执行结果。</p>
-<p>view change<br>发生view change表示primary宕机或者被分区了。</p>
+<h4 id="View-Change"><a href="#View-Change" class="headerlink" title="View Change"></a>View Change</h4><p>发生view change表示primary宕机或者被分区了。</p>
 <p>这里，view change的时候，backup并不是推选自己去当选primary，而是选择一个除了old primary外，序号最小的backup去做primary，并且序号最小的backup收到f+1个DoViewChange后，就认为自己为primary了。如果推选新的primary失败，副本会继续一个新的view change，再推选一个最小序号的backup作为primary。</p>
-<p>Recovery<br>当一个replica fail-recovery后，它需要恢复到足够新的log，才能够处理请求。这里注意的是，因为VR协议是不要求任何信息记录到磁盘的，所以如果宕机后，该replica是会丢失所有数据的，所以需要从其他replica上恢复。当replica恢复后，需要置自己的状态为recovering，并开始执行recovery protocol。<br>1- recovering replica发送<recovery i,="" x="">消息给所有的其他副本， x是当前时间。<br>2- 一个replica j只有是normal状态时，才回复Recovery消息<recoveryresponse v,="" x,="" l,="" n,="" k,="" j="">。v是当前view number，如果j是primary，则l是log，n是op-number，k是commit-number，如果不是的话，这些字段都为null。<br>3- recovering replica等接受到f+1个RecoveryResponse后，包括primary，则开始恢复自己的状态，恢复完后更改自己的状态为normal。</recoveryresponse></recovery></p>
+<h4 id="Recovery"><a href="#Recovery" class="headerlink" title="Recovery"></a>Recovery</h4><p>当一个replica fail-recovery后，它需要恢复到足够新的log，才能够处理请求。这里注意的是，因为VR协议是不要求任何信息记录到磁盘的，所以如果宕机后，该replica是会丢失所有数据的，所以需要从其他replica上恢复。当replica恢复后，需要置自己的状态为recovering，并开始执行recovery protocol。<br>1- recovering replica发送<recovery i,="" x="">消息给所有的其他副本， x是当前时间。<br>2- 一个replica j只有是normal状态时，才回复Recovery消息<recoveryresponse v,="" x,="" l,="" n,="" k,="" j="">。v是当前view number，如果j是primary，则l是log，n是op-number，k是commit-number，如果不是的话，这些字段都为null。<br>3- recovering replica等接受到f+1个RecoveryResponse后，包括primary，则开始恢复自己的状态，恢复完后更改自己的状态为normal。</recoveryresponse></recovery></p>
 <p>如果集群正在进行view change，而recovering replica又是新primary的话，view change最终会失败。</p>
-<p>Client Recovery<br>如果一个客户端宕机并恢复后，客户端的新请求的request-number需要比之前的大，客户端可以向replicas询问它的request-number。</p>
-<p>实际工程应用<br>Efficient Recovery<br>因为VR不要求持久化存储log，所以replica宕机恢复后需要完整的log，这在实际工程中是不现实的。<br>方法：定期的在后台将log备份到磁盘。</p>
-<p>View Changes<br>在上述的veiw change过程中，所有的backup都需要向未来的primary发送全量的日志，primary会选择最新的log当做自己的log，在实际工程中，log可能会很大，这是无法接受的。<br>方法：假定新的primary拥有了足够新的日志，而backup只需发送最新的一部分日志即可。如果日志不够，primary可以主动请求更多的信息。</p>
-<p>优化<br>1- witness<br>2f+1个replicas组成的group，只需要有f+1个active replicas运行RSM即可，primay总是active replica，witnesses执行view change和recovery，但不需执行norm case protocol。如果f+1个active replicas有失败的，witness可以顶替，但仍不需执行norm case protocol。</p>
-<p>2- Batching<br>把客户端的请求打包发送给backups，而不是每个请求都走一个norm protocol，这会有效的提升系统的吞吐，在这raft和paxos中，也是常见的优化手段。<br>另外一种优化手段是做pipeline。</p>
-<p>3- Fast Reads<br>因为要提供一致性读，所以读请求也要走一遍正常的协议流程（raft、paxos也是如此），但这样效率会低很多，这里介绍了两种减少读延迟的优化手段。<br>3-1 Reads at the Primary<br>给primary加个租约。primary只有拥有f个其他replicas给的有效租约，才能够处理请求。新view change中的primary只有等f+1个 replicas给旧的primary的租约过期才能开始处理请求。</p>
-<p>3-2 Reads at the Backups<br>如果客户端允许读到不够新的数据，那么是允许从backups上读数据的。但对于同一个客户端来说，为了保证这个客户端读的结果是有因果关系的，必须让backup知道客户端上次执行的操作序号（Zookeeper协议也是保证客户端有序）。</p>
+<h4 id="Client-Recovery"><a href="#Client-Recovery" class="headerlink" title="Client Recovery"></a>Client Recovery</h4><p>如果一个客户端宕机并恢复后，客户端的新请求的request-number需要比之前的大，客户端可以向replicas询问它的request-number。</p>
+<h3 id="实际工程应用"><a href="#实际工程应用" class="headerlink" title="实际工程应用"></a>实际工程应用</h3><h4 id="Efficient-Recovery"><a href="#Efficient-Recovery" class="headerlink" title="Efficient Recovery"></a>Efficient Recovery</h4><p>因为VR不要求持久化存储log，所以replica宕机恢复后需要完整的log，这在实际工程中是不现实的。<br>方法：定期的在后台将log备份到磁盘。</p>
+<h4 id="View-Changes"><a href="#View-Changes" class="headerlink" title="View Changes"></a>View Changes</h4><p>在上述的veiw change过程中，所有的backup都需要向未来的primary发送全量的日志，primary会选择最新的log当做自己的log，在实际工程中，log可能会很大，这是无法接受的。<br>方法：假定新的primary拥有了足够新的日志，而backup只需发送最新的一部分日志即可。如果日志不够，primary可以主动请求更多的信息。</p>
+<h3 id="优化"><a href="#优化" class="headerlink" title="优化"></a>优化</h3><h4 id="1-witness"><a href="#1-witness" class="headerlink" title="1- witness"></a>1- witness</h4><p>2f+1个replicas组成的group，只需要有f+1个active replicas运行RSM即可，primay总是active replica，witnesses执行view change和recovery，但不需执行norm case protocol。如果f+1个active replicas有失败的，witness可以顶替，但仍不需执行norm case protocol。</p>
+<h4 id="2-Batching"><a href="#2-Batching" class="headerlink" title="2- Batching"></a>2- Batching</h4><p>把客户端的请求打包发送给backups，而不是每个请求都走一个norm protocol，这会有效的提升系统的吞吐，在这raft和paxos中，也是常见的优化手段。<br>另外一种优化手段是做pipeline。</p>
+<h4 id="3-Fast-Reads"><a href="#3-Fast-Reads" class="headerlink" title="3- Fast Reads"></a>3- Fast Reads</h4><p>因为要提供一致性读，所以读请求也要走一遍正常的协议流程（raft、paxos也是如此），但这样效率会低很多，这里介绍了两种减少读延迟的优化手段。</p>
+<h5 id="3-1-Reads-at-the-Primary"><a href="#3-1-Reads-at-the-Primary" class="headerlink" title="3-1 Reads at the Primary"></a>3-1 Reads at the Primary</h5><p>给primary加个租约。primary只有拥有f个其他replicas给的有效租约，才能够处理请求。新view change中的primary只有等f+1个 replicas给旧的primary的租约过期才能开始处理请求。</p>
+<h5 id="3-2-Reads-at-the-Backups"><a href="#3-2-Reads-at-the-Backups" class="headerlink" title="3-2 Reads at the Backups"></a>3-2 Reads at the Backups</h5><p>如果客户端允许读到不够新的数据，那么是允许从backups上读数据的。但对于同一个客户端来说，为了保证这个客户端读的结果是有因果关系的，必须让backup知道客户端上次执行的操作序号（Zookeeper协议也是保证客户端有序）。</p>
 <p>chubby和zookeeper的一个区别就是chubby提供全局有序，而zookeeper提供客户端有序。</p>
-<p>Reconfiguration<br>配置变更的几种情况，替换宕机的机器，替换现有的机器（scale up），或者说改变quorum。<br>为了处理配置变更，VR增加了一些额外的信息，epoch-number表示一个配置下的编号，old-configuration表示旧的配置，status增加了一个transitioning。</p>
-<p>配置变更流程：<br>1- 拥有admin权限的客户端想primary发送一个<reconfiguration e,="" c,="" s,="" new-config="">的消息，e是当前的epoch-number，s是客户端的request-number，new-config提供新group里所有的ip地址。<br>2- primary停止接受新请求，配置变更的请求是primary在当前epoch处理的最后一个请求。primary把请求追加到自己的log中，发送Prepare请求给backups。<br>3- backups将请求追加到自己的log中，并发送PrepareOk给primary。<br>4- 当primary接受到f个replicas返回的响应包后，即增加epoch-number，并发送Commit信息给replicas。并且发送<startepoch e,="" n,="" old-config,="" new-config="">信息给所有的replicas（包括新的）。</startepoch></reconfiguration></p>
-<p>Processing in the new group<br>1- 当backups收到StartEpoch或者Commit消息后，记录old和new configuration，新的epoch-number，op-number，view-number设置为0，设置状态为transitioning。<br>2- 新replica缺失log的话，需要先补全所有的log再处理新的请求。如果是primary，则需要发送<epochstarted e,="" i="">给所有的replicas。</epochstarted></p>
-<p>Processing at replicas being replaced<br>1- 当replicas接受到新epoch时，改变epoch-number到新的，并设置状态为transitioning，记录old和new configuration。<br>2- 被替换的replicas直到接受到f’+1个新replicas的EpochStarted的消息，则关机。<br>3- 如果被替换的replicas在一定时间内没有收到足够的EpochStarted消息，则会主动发StartEpoch消息询问。</p>
-<p>Correctness<br>略</p>
+<h3 id="Reconfiguration"><a href="#Reconfiguration" class="headerlink" title="Reconfiguration"></a>Reconfiguration</h3><p>配置变更的几种情况，替换宕机的机器，替换现有的机器（scale up），或者说改变quorum。<br>为了处理配置变更，VR增加了一些额外的信息，epoch-number表示一个配置下的编号，old-configuration表示旧的配置，status增加了一个transitioning。</p>
+<h4 id="配置变更流程"><a href="#配置变更流程" class="headerlink" title="配置变更流程"></a>配置变更流程</h4><p>1- 拥有admin权限的客户端想primary发送一个<reconfiguration e,="" c,="" s,="" new-config="">的消息，e是当前的epoch-number，s是客户端的request-number，new-config提供新group里所有的ip地址。<br>2- primary停止接受新请求，配置变更的请求是primary在当前epoch处理的最后一个请求。primary把请求追加到自己的log中，发送Prepare请求给backups。<br>3- backups将请求追加到自己的log中，并发送PrepareOk给primary。<br>4- 当primary接受到f个replicas返回的响应包后，即增加epoch-number，并发送Commit信息给replicas。并且发送<startepoch e,="" n,="" old-config,="" new-config="">信息给所有的replicas（包括新的）。</startepoch></reconfiguration></p>
+<h4 id="Processing-in-the-new-group"><a href="#Processing-in-the-new-group" class="headerlink" title="Processing in the new group"></a>Processing in the new group</h4><p>1- 当backups收到StartEpoch或者Commit消息后，记录old和new configuration，新的epoch-number，op-number，view-number设置为0，设置状态为transitioning。<br>2- 新replica缺失log的话，需要先补全所有的log再处理新的请求。如果是primary，则需要发送<epochstarted e,="" i="">给所有的replicas。</epochstarted></p>
+<h4 id="Processing-at-replicas-being-replaced"><a href="#Processing-at-replicas-being-replaced" class="headerlink" title="Processing at replicas being replaced"></a>Processing at replicas being replaced</h4><p>1- 当replicas接受到新epoch时，改变epoch-number到新的，并设置状态为transitioning，记录old和new configuration。<br>2- 被替换的replicas直到接受到f’+1个新replicas的EpochStarted的消息，则关机。<br>3- 如果被替换的replicas在一定时间内没有收到足够的EpochStarted消息，则会主动发StartEpoch消息询问。</p>
+<h3 id="Correctness"><a href="#Correctness" class="headerlink" title="Correctness"></a>Correctness</h3><p>略</p>
 
       
 
